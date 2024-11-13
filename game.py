@@ -10,8 +10,11 @@
 #
 # mõningane eeskuju: Fruit-catcher tüüpi mängud, platformerid
 #
-# Lisakommentaar (nt käivitusjuhend):
-#
+# Lisakommentaar:
+# Praeguses alpha-versioonis ei tööta menu nupud, seega mängu sulgemiseks tuleb see kinni panna Thonnys stopi kasutades.
+# Praegused pildid on placeholderid, plaanis on kõik ise luua.
+# Praegusele valmisolevale gamemodeile tahame ideaalis lisada ka objektid, mida püüda ei tohi ja elud. Algses plaanis kavatsesime teha 2 gamemodei,
+# aga võisime olla veidi liiga ambitsioonikad.
 ##################################################
 
 
@@ -55,7 +58,7 @@ def draw_text(text,font,text_col,x,y):
 mixer.music.load('HOME.mp3')
 mixer.music.set_volume(0.05)
 mixer.music.play()
-#backgorund
+#background
 pilt2 = pygame.image.load("background.jpg")
 pilt2 = pygame.transform.scale(pilt2, (1920, 1080))
 pilt3 = pygame.image.load("background2.jpg")
@@ -73,41 +76,35 @@ rect = pilt.get_rect()
 rect.topleft = (x, y)
 
 #fruits
-apple = pygame.image.load("apple.png")
-apple = pygame.transform.scale(apple, (147, 183))
-mango = pygame.image.load("mango.png")
-mango = pygame.transform.scale(mango, (170, 170))
-banana = pygame.image.load("banana.png")
-banana = pygame.transform.scale(banana, (180, 150))
-peach = pygame.image.load("peach.png")
-peach =  pygame.transform.scale(peach, (200, 230))
-maasikas = pygame.image.load("maasikas.png")
-maasikas =  pygame.transform.scale(maasikas, (170, 170))
+bambooshoot = pygame.image.load("bambooshoot.png")
+bambooshoot = pygame.transform.scale(bambooshoot, (147, 183))
+bamboosegment = pygame.image.load("bamboosegment.png")
+bamboosegment = pygame.transform.scale(bamboosegment, (170, 170))
 
-#apple
+#bambooshoot
 x2 = randint(0,1845)
 y2 = 0
-rect2 = apple.get_rect()
+rect2 = bamboosegment.get_rect()
 rect2.topleft = (x2, y2)
-#mango
+
 x3 = randint(0,1845)
 y3 = 0
-rect3 = mango.get_rect()
+rect3 = bamboosegment.get_rect()
 rect3.topleft = (x3, y3)
-#banana
+
 x4 = randint(0,1845)
 y4 = 25
-rect4 = banana.get_rect()
+rect4 = bamboosegment.get_rect()
 rect4.topleft = (x4, y4)
-#peach
+#bamboosegment
 x5 = randint(0,1845)
 y5 = 0
-rect5 = peach.get_rect()
+rect5 = bambooshoot.get_rect()
 rect5.topleft = (x5, y5)
-#maasikas
+
 x6 = randint(0,1845)
 y6 = 0
-rect6 = maasikas.get_rect()
+rect6 = bambooshoot.get_rect()
 rect6.topleft = (x6, y6)
 
 
@@ -148,11 +145,10 @@ while run:
     if game_paused== False:
         mixer.music.unpause()
         screen.blit(pilt, (x,y))
-        screen.blit(apple, (x2,y2))
-        screen.blit(mango, (x3,y3))
-        screen.blit(banana, (x4,y4))
-        screen.blit(maasikas, (x5,y5))
-        screen.blit(peach, (x6,y6))
+        screen.blit(bambooshoot, (x2,y2))
+        screen.blit(bamboosegment, (x3,y3))
+        screen.blit(bambooshoot, (x4,y4))
+        screen.blit(bamboosegment, (x5,y5))
         rect.topleft=(x, y)
         rect2.topleft=(x2, y2)
         rect3.topleft=(x3, y3)
