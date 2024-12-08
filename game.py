@@ -80,37 +80,29 @@ bambooshoot = pygame.image.load("bambooshoot.png")
 bambooshoot = pygame.transform.scale(bambooshoot, (147, 183))
 bamboosegment = pygame.image.load("bamboosegment.png")
 bamboosegment = pygame.transform.scale(bamboosegment, (170, 170))
+evilbamboo = pygame.image.load("evilbambooshoot.png")
+evilbamboo = pygame.transform.scale(evilbamboo, (147, 183))
 
-#bambooshoot
-x2 = randint(0,1845)
+
+x2 = randint(100,1745)
 y2 = 0
 rect2 = bamboosegment.get_rect()
 rect2.topleft = (x2, y2)
 
-x3 = randint(0,1845)
+x3 = randint(100,1745)
 y3 = 0
-rect3 = bamboosegment.get_rect()
+rect3 = bambooshoot.get_rect()
 rect3.topleft = (x3, y3)
 
-x4 = randint(0,1845)
+x4 = randint(100,1745)
 y4 = 25
-rect4 = bamboosegment.get_rect()
+rect4 = evilbamboo.get_rect()
 rect4.topleft = (x4, y4)
-#bamboosegment
-x5 = randint(0,1845)
-y5 = 0
-rect5 = bambooshoot.get_rect()
-rect5.topleft = (x5, y5)
-
-x6 = randint(0,1845)
-y6 = 0
-rect6 = bambooshoot.get_rect()
-rect6.topleft = (x6, y6)
 
 
 #punktid
 punktid=0
-
+elud = 5
 
 
 #loop
@@ -135,66 +127,50 @@ while run:
         elif rect.colliderect(rect3):
             punktid+=1
         elif rect.colliderect(rect4):
-            punktid+=1
-        elif rect.colliderect(rect5):
-            punktid+=1
-        elif rect.colliderect(rect6):
-            punktid+=1
+            elud-=1
+            if elud == 0:
+                game_paused = True
+
             
     #pildid
     if game_paused== False:
         mixer.music.unpause()
         screen.blit(pilt, (x,y))
-        screen.blit(bambooshoot, (x2,y2))
-        screen.blit(bamboosegment, (x3,y3))
-        screen.blit(bambooshoot, (x4,y4))
-        screen.blit(bamboosegment, (x5,y5))
+        screen.blit(bamboosegment, (x2,y2))
+        screen.blit(bambooshoot, (x3,y3))
+        screen.blit(evilbamboo, (x4,y4))
+
         rect.topleft=(x, y)
         rect2.topleft=(x2, y2)
         rect3.topleft=(x3, y3)
         rect4.topleft=(x4, y4)
-        rect5.topleft=(x5, y5)
-        rect6.topleft=(x6, y6)
+
         #pildi rectangelid ifid
         y2 += 3
         if y2 >= 897:
             y2 = 0
-            x2= randint(0,1845)
+            x2= randint(100,1745)
         if rect.colliderect(rect2):
             y2 = 0
-            x2= randint(0,1845)
+            x2= randint(100,1745)
             
-        y3 += 2
+        y3 += 2.5
         if y3 >= 910:
             y3 = 0
-            x3= randint(0,1845)
+            x3= randint(100,1745)
         if rect.colliderect(rect3):
             y3 = 0
-            x3= randint(0,1845)
+            x3= randint(100,1745)
             
-        y4 += 3.5
+        y4 += 2
         if y4 >= 946:
             y4 = 0
-            x4= randint(0,1845)
+            x4= randint(100,1745)
         if rect.colliderect(rect4):
             y4 = 0
-            x4= randint(0,1845)
+            x4= randint(100,1745)
             
-        y5 += 2.5
-        if y5 >= 910:
-            y5 = 0
-            x5= randint(0,1845)
-        if rect.colliderect(rect5):
-            y5 = 0
-            x5= randint(0,1845)
-            
-        y6 += 2.75
-        if y6 >= 870:
-            y6 = 0
-            x6= randint(0,1845)
-        if rect.colliderect(rect6):
-            y6 = 0
-            x6= randint(0,1845)
+
     else:
         mixer.music.pause() 
     #nupud ja asjad
