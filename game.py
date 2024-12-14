@@ -67,7 +67,7 @@ pilt3 = pygame.transform.scale(pilt3, (1920, 1080))
 #player
 samm=25
 pilt = pygame.image.load("player.png")
-pilt = pygame.transform.scale(pilt, (305, 324))
+pilt = pygame.transform.scale(pilt, (350, 350))
 
 x = 775
 y = 796
