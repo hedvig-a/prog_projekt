@@ -35,11 +35,11 @@ game_paused=False
 menu_state ="main"
 
 #font
-font= pygame.font.SysFont("arialblack",40)
-font2= pygame.font.SysFont("arialblack",20)
+font= pygame.font.SysFont("arialblack",55)
+font2= pygame.font.SysFont("arialblack",35)
 
 #color
-text_col= (255,255,255)
+text_col= (0,0,0)
 pink= (255,192,203)
 
 #load img
@@ -52,6 +52,8 @@ quit_button = button.Button(10,110, quit_img, 1)
 
 def draw_text(text,font,text_col,x,y):
     img = font.render(text,True,text_col)
+    imgrect = img.get_rect()
+    imgrect.center = (x//2, y//2)
     screen.blit(img,(x,y))
     
 #taustamuusika
@@ -67,7 +69,7 @@ pilt3 = pygame.transform.scale(pilt3, (1920, 1080))
 #player
 samm=25
 pilt = pygame.image.load("player.png")
-pilt = pygame.transform.scale(pilt, (350, 350))
+pilt = pygame.transform.scale(pilt, (340, 340))
 
 x = 775
 y = 796
@@ -77,11 +79,11 @@ rect.topleft = (x, y)
 
 #fruits
 bambooshoot = pygame.image.load("bambooshoot.png")
-bambooshoot = pygame.transform.scale(bambooshoot, (147, 183))
+bambooshoot = pygame.transform.scale(bambooshoot, (120, 120))
 bamboosegment = pygame.image.load("bamboosegment.png")
-bamboosegment = pygame.transform.scale(bamboosegment, (170, 170))
+bamboosegment = pygame.transform.scale(bamboosegment, (120, 120))
 evilbamboo = pygame.image.load("evilbambooshoot.png")
-evilbamboo = pygame.transform.scale(evilbamboo, (147, 183))
+evilbamboo = pygame.transform.scale(evilbamboo, (120, 120))
 
 
 x2 = randint(100,1745)
@@ -114,14 +116,16 @@ while run:
     if game_paused== True:
         if menu_state == "main":
             screen.blit(pilt3, (0,0))
-            
+            if elud == 0:
+                draw_text("Mäng läbi, elud otsas!", font2,text_col,700,500)
             if resume_button.draw(screen):
                 game_paused=False
             if quit_button.draw(screen):
                 run=False
     else:
         draw_text("Press SPACE to pause", font2,text_col,5,5)
-        draw_text(f"score: {punktid}", font2,pink,5,25)
+        draw_text(f"score: {punktid}", font2,pink,5,35)
+        draw_text(f"elud: {elud}", font2,pink,5,65)
         if rect.colliderect(rect2):
             punktid+=1
         elif rect.colliderect(rect3):
@@ -130,6 +134,7 @@ while run:
             elud-=1
             if elud == 0:
                 game_paused = True
+                draw_text("Mäng läbi, elud otsas!", font2,text_col,700,700)
 
             
     #pildid
