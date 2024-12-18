@@ -51,6 +51,12 @@ def loe_highscore():
         score = int(score.strip())
         return score
 
+def draw_text(text,font,text_col,x,y):
+    img = font.render(text,True,text_col)
+    imgrect = img.get_rect()
+    imgrect.center = (x//2, y//2)
+    screen.blit(img,(x,y))
+
 #variables
 game_paused=False
 menu_state ="main"
@@ -69,18 +75,11 @@ quit_img = pygame.image.load("button_quit.png").convert_alpha()
 #button
 resume_button = button.Button(10,10, resume_img, 1)
 quit_button = button.Button(10,110, quit_img, 1)
-
-
-def draw_text(text,font,text_col,x,y):
-    img = font.render(text,True,text_col)
-    imgrect = img.get_rect()
-    imgrect.center = (x//2, y//2)
-    screen.blit(img,(x,y))
-    
+   
 #taustamuusika
 mixer.music.load('HOME.mp3')
 mixer.music.set_volume(0.05)
-mixer.music.play()
+mixer.music.play(-1)
 #background
 pilt2 = pygame.image.load("background.jpg")
 pilt2 = pygame.transform.scale(pilt2, (1920, 1080))
@@ -94,14 +93,13 @@ pilt = pygame.transform.scale(pilt, (340, 340))
 pilt_shift = pygame.image.load("player_shift.png")
 pilt_shift = pygame.transform.scale(pilt_shift, (340, 340))
 
-
 x = 775
 y = 796
 
 rect = pilt.get_rect()
 rect.topleft = (x, y)
 
-#fruits
+#objektid
 bambooshoot = pygame.image.load("bambooshoot.png")
 bambooshoot = pygame.transform.scale(bambooshoot, (120, 120))
 bamboosegment = pygame.image.load("bamboosegment.png")
@@ -143,7 +141,7 @@ pygame.key.set_repeat(1,10)
 run=True
 while run:
     screen.blit(pilt2, (0,0))
-    #paused?
+    #paused
     if game_paused== True:
         if menu_state == "main":
             screen.blit(pilt3, (0,0))
@@ -168,47 +166,37 @@ while run:
             elud-=1
             if elud == 0:
                 game_paused = True
-                draw_text("Mäng läbi, elud otsas!", font2,text_col,700,700)
 
             
     #pildid
     if game_paused== False:
         mixer.music.unpause()
-        #screen.blit(pilt, (x,y))
-        # Check for Shift key and adjust speed
+        
         keys = pygame.key.get_pressed()
-        normal_speed = samm // 6  # Quarter of the original speed
-        shift_speed = int(normal_speed * 3)  # 2x of the new normal speed
+        normal_speed = samm // 6  
+        shift_speed = int(normal_speed * 3)  
 
-
-        # Set the current step
         step = shift_speed if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT] else normal_speed
 
-
-        # Movement with Arrow Keys or WASD
         if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and x >= 5:
             x -= step
         if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and x <= 1596:
             x += step
 
-        # Determine which image to draw
         if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
-            screen.blit(pilt_shift, (x, y))  # Draw the shift version
+            screen.blit(pilt_shift, (x, y))  
         else:
-            screen.blit(pilt, (x, y))  # Draw the normal version
+            screen.blit(pilt, (x, y)) 
 
-
-        # Movement with Arrow Keys or WASD
         if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and x >= 5:
             x -= step
         if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and x <= 1596:
             x += step
 
-        # Determine which image to draw
         if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
-            screen.blit(pilt_shift, (x, y))  # Draw the shift version
+            screen.blit(pilt_shift, (x, y))  
         else:
-            screen.blit(pilt, (x, y))  # Draw the normal version
+            screen.blit(pilt, (x, y)) 
 
 
         screen.blit(bamboosegment, (x2,y2))
@@ -221,48 +209,45 @@ while run:
         rect4.topleft =(x4, y4)
 
         #pildi rectangelid ifid
-        # Bamboosegment (normal fruit)
+        # Bamboosegment 
         y2 += 3
-        if y2 >= 1080:  # If it moves past the bottom of the screen
-            y2 = -120  # Reset to above the screen
+        if y2 >= 1080:  
+            y2 = -120  
             x2 = randint(100, 1745)
-        if rect.colliderect(rect2):  # If player catches it
-            y2 = -120  # Reset to above the screen
+        if rect.colliderect(rect2):  
+            y2 = -120  
             x2 = randint(100, 1745)
 
-        # Bambooshoot (another normal fruit)
+        # Bambooshoot
         y3 += 2.5
-        if y3 >= 1080:  # If it moves past the bottom of the screen
-            y3 = -120  # Reset to above the screen
+        if y3 >= 1080:  
+            y3 = -120  
             x3 = randint(100, 1745)
-        if rect.colliderect(rect3):  # If player catches it
-            y3 = -120  # Reset to above the screen
+        if rect.colliderect(rect3):  
+            y3 = -120  
             x3 = randint(100, 1745)
 
-        # Harmful object (random image)
-        y4 += 1  # Harmful object falls slower
-        rect4.topleft = (x4, y4)  # Update the collision box position
+        # Harmful object 
+        y4 += 1  
+        rect4.topleft = (x4, y4)  
 
-        if y4 >= 1080:  # If it moves past the bottom of the screen
-            y4 = -120*0.75  # Reset to above the screen
+        if y4 >= 1080:  
+            y4 = -120*0.75  
             x4 = randint(100*0.75, 1835)
-            current_harmful_image = choice(harmful_images)  # Randomly select a new harmful image
-            rect4 = current_harmful_image.get_rect()  # Update collision box for new image
+            current_harmful_image = choice(harmful_images)  
+            rect4 = current_harmful_image.get_rect()  
             rect4.topleft = (x4, y4)
 
-        if rect.colliderect(rect4):  # If player gets hit
-            elud -= 1  # Decrease lives first
-            print(f"Collision detected! Lives left: {elud}")  # Debug message
+        if rect.colliderect(rect4): 
+            elud -= 1  
 
-            if elud == 0:  # If no lives left, pause the game
+            if elud == 0: 
                 game_paused = True
-                draw_text("Mäng läbi, elud otsas!", font2, text_col, 700, 700)
 
-            # Reset the harmful object's position and image
-            y4 = -120*0.75  # Reset to above the screen
+            y4 = -120*0.75  
             x4 = randint(100*0.75, 1835)
-            current_harmful_image = choice(harmful_images)  # Randomly select a new harmful image
-            rect4 = current_harmful_image.get_rect()  # Update collision box for new image
+            current_harmful_image = choice(harmful_images)  
+            rect4 = current_harmful_image.get_rect()  
             rect4.topleft = (x4, y4)
             
 
