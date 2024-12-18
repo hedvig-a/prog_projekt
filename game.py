@@ -19,7 +19,7 @@
 
 
 import pygame, sys
-from random import randint
+from random import randint, choice
 from pygame import mixer
 import button
 pygame.init()
@@ -29,6 +29,27 @@ screen_height= 1080
 screen = pygame.display.set_mode((screen_width,screen_height))
 pygame.display.set_caption("Game")
 
+def salvesta_highscore(p):
+    try:
+        with open('score.txt', 'r+', encoding='utf-8') as f:
+            score = f.readline() 
+            if score:
+                score = int(score.strip()) 
+                if score < p:  
+                    f.seek(0)  
+                    f.write(str(p)) 
+                    f.truncate() 
+            else: 
+                f.write(str(p))
+    except FileNotFoundError:
+        with open('score.txt', 'w', encoding='utf-8') as f:
+            f.write(str(p))
+            
+def loe_highscore():
+    with open('score.txt', 'r', encoding='utf-8') as f:
+        score = f.readline()
+        score = int(score.strip())
+        return score
 
 #variables
 game_paused=False
@@ -56,28 +77,6 @@ def draw_text(text,font,text_col,x,y):
     imgrect.center = (x//2, y//2)
     screen.blit(img,(x,y))
     
-def salvesta_highscore(p):
-    try:
-        with open('score.txt', 'r+', encoding='utf-8') as f:
-            score = f.readline() 
-            if score:
-                score = int(score.strip()) 
-                if score < p:  
-                    f.seek(0)  
-                    f.write(str(p)) 
-                    f.truncate() 
-            else: 
-                f.write(str(p))
-    except FileNotFoundError:
-        with open('score.txt', 'w', encoding='utf-8') as f:
-            f.write(str(p))
-            
-def loe_highscore():
-    with open('score.txt', 'r', encoding='utf-8') as f:
-        score = f.readline()
-        score = int(score.strip())
-        return score
-    
 #taustamuusika
 mixer.music.load('HOME.mp3')
 mixer.music.set_volume(0.05)
@@ -92,6 +91,9 @@ pilt3 = pygame.transform.scale(pilt3, (1920, 1080))
 samm=25
 pilt = pygame.image.load("player.png")
 pilt = pygame.transform.scale(pilt, (340, 340))
+pilt_shift = pygame.image.load("player_shift.png")
+pilt_shift = pygame.transform.scale(pilt_shift, (340, 340))
+
 
 x = 775
 y = 796
@@ -104,23 +106,30 @@ bambooshoot = pygame.image.load("bambooshoot.png")
 bambooshoot = pygame.transform.scale(bambooshoot, (120, 120))
 bamboosegment = pygame.image.load("bamboosegment.png")
 bamboosegment = pygame.transform.scale(bamboosegment, (120, 120))
-evilbamboo = pygame.image.load("evilbambooshoot.png")
-evilbamboo = pygame.transform.scale(evilbamboo, (120, 120))
 
+harmful_images = [
+    pygame.image.load("kott.png").convert_alpha(),
+    pygame.image.load("kivi.png").convert_alpha(),
+    pygame.image.load("straw.png").convert_alpha(),
+    pygame.image.load("kork.png").convert_alpha()
+]
+harmful_images = [pygame.transform.scale(img, (int(120 * 0.75), int(120 * 0.75))) for img in harmful_images]
+
+current_harmful_image = choice(harmful_images)
 
 x2 = randint(100,1745)
-y2 = 0
+y2 = -120
 rect2 = bamboosegment.get_rect()
 rect2.topleft = (x2, y2)
 
 x3 = randint(100,1745)
-y3 = 0
+y3 = -120
 rect3 = bambooshoot.get_rect()
 rect3.topleft = (x3, y3)
 
-x4 = randint(100,1745)
-y4 = 25
-rect4 = evilbamboo.get_rect()
+x4 = randint(100, 1745)
+y4 = -120
+rect4 = current_harmful_image.get_rect()
 rect4.topleft = (x4, y4)
 
 
@@ -159,46 +168,102 @@ while run:
             elud-=1
             if elud == 0:
                 game_paused = True
-#                 draw_text("Mäng läbi, elud otsas!", font2,text_col,700,700)
+                draw_text("Mäng läbi, elud otsas!", font2,text_col,700,700)
 
             
     #pildid
     if game_paused== False:
         mixer.music.unpause()
-        screen.blit(pilt, (x,y))
+        #screen.blit(pilt, (x,y))
+        # Check for Shift key and adjust speed
+        keys = pygame.key.get_pressed()
+        normal_speed = samm // 6  # Quarter of the original speed
+        shift_speed = int(normal_speed * 3)  # 2x of the new normal speed
+
+
+        # Set the current step
+        step = shift_speed if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT] else normal_speed
+
+
+        # Movement with Arrow Keys or WASD
+        if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and x >= 5:
+            x -= step
+        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and x <= 1596:
+            x += step
+
+        # Determine which image to draw
+        if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
+            screen.blit(pilt_shift, (x, y))  # Draw the shift version
+        else:
+            screen.blit(pilt, (x, y))  # Draw the normal version
+
+
+        # Movement with Arrow Keys or WASD
+        if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and x >= 5:
+            x -= step
+        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and x <= 1596:
+            x += step
+
+        # Determine which image to draw
+        if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
+            screen.blit(pilt_shift, (x, y))  # Draw the shift version
+        else:
+            screen.blit(pilt, (x, y))  # Draw the normal version
+
+
         screen.blit(bamboosegment, (x2,y2))
         screen.blit(bambooshoot, (x3,y3))
-        screen.blit(evilbamboo, (x4,y4))
+        screen.blit(current_harmful_image, (x4, y4))
 
         rect.topleft=(x, y)
         rect2.topleft=(x2, y2)
         rect3.topleft=(x3, y3)
-        rect4.topleft=(x4, y4)
+        rect4.topleft =(x4, y4)
 
         #pildi rectangelid ifid
+        # Bamboosegment (normal fruit)
         y2 += 3
-        if y2 >= 897:
-            y2 = 0
-            x2= randint(100,1745)
-        if rect.colliderect(rect2):
-            y2 = 0
-            x2= randint(100,1745)
-            
+        if y2 >= 1080:  # If it moves past the bottom of the screen
+            y2 = -120  # Reset to above the screen
+            x2 = randint(100, 1745)
+        if rect.colliderect(rect2):  # If player catches it
+            y2 = -120  # Reset to above the screen
+            x2 = randint(100, 1745)
+
+        # Bambooshoot (another normal fruit)
         y3 += 2.5
-        if y3 >= 910:
-            y3 = 0
-            x3= randint(100,1745)
-        if rect.colliderect(rect3):
-            y3 = 0
-            x3= randint(100,1745)
-            
-        y4 += 2
-        if y4 >= 946:
-            y4 = 0
-            x4= randint(100,1745)
-        if rect.colliderect(rect4):
-            y4 = 0
-            x4= randint(100,1745)
+        if y3 >= 1080:  # If it moves past the bottom of the screen
+            y3 = -120  # Reset to above the screen
+            x3 = randint(100, 1745)
+        if rect.colliderect(rect3):  # If player catches it
+            y3 = -120  # Reset to above the screen
+            x3 = randint(100, 1745)
+
+        # Harmful object (random image)
+        y4 += 1  # Harmful object falls slower
+        rect4.topleft = (x4, y4)  # Update the collision box position
+
+        if y4 >= 1080:  # If it moves past the bottom of the screen
+            y4 = -120*0.75  # Reset to above the screen
+            x4 = randint(100*0.75, 1835)
+            current_harmful_image = choice(harmful_images)  # Randomly select a new harmful image
+            rect4 = current_harmful_image.get_rect()  # Update collision box for new image
+            rect4.topleft = (x4, y4)
+
+        if rect.colliderect(rect4):  # If player gets hit
+            elud -= 1  # Decrease lives first
+            print(f"Collision detected! Lives left: {elud}")  # Debug message
+
+            if elud == 0:  # If no lives left, pause the game
+                game_paused = True
+                draw_text("Mäng läbi, elud otsas!", font2, text_col, 700, 700)
+
+            # Reset the harmful object's position and image
+            y4 = -120*0.75  # Reset to above the screen
+            x4 = randint(100*0.75, 1835)
+            current_harmful_image = choice(harmful_images)  # Randomly select a new harmful image
+            rect4 = current_harmful_image.get_rect()  # Update collision box for new image
+            rect4.topleft = (x4, y4)
             
 
     else:
@@ -206,14 +271,12 @@ while run:
     #nupud ja asjad
     for i in pygame.event.get():
         if i.type == pygame.QUIT:
-            running = False
+            run = False
         if i.type == pygame.KEYDOWN:
-            if i.key==pygame.K_SPACE:
-                game_paused=True
-            elif i.key == pygame.K_LEFT and x>=5:
-                x = x - samm
-            elif i.key == pygame.K_RIGHT and x<=1596:
-                x = x + samm
+            if i.key == pygame.K_SPACE:
+                game_paused = True
+
+
             
     pygame.display.update()
 
