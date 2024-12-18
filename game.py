@@ -78,7 +78,7 @@ quit_button = button.Button(10,110, quit_img, 1)
    
 #taustamuusika
 mixer.music.load('HOME.mp3')
-mixer.music.set_volume(0.05)
+mixer.music.set_volume(0.35)
 mixer.music.play(-1)
 #background
 pilt2 = pygame.image.load("background.jpg")
