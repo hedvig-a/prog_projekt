@@ -56,6 +56,28 @@ def draw_text(text,font,text_col,x,y):
     imgrect.center = (x//2, y//2)
     screen.blit(img,(x,y))
     
+def salvesta_highscore(p):
+    try:
+        with open('score.txt', 'r+', encoding='utf-8') as f:
+            score = f.readline() 
+            if score:
+                score = int(score.strip()) 
+                if score < p:  
+                    f.seek(0)  
+                    f.write(str(p)) 
+                    f.truncate() 
+            else: 
+                f.write(str(p))
+    except FileNotFoundError:
+        with open('score.txt', 'w', encoding='utf-8') as f:
+            f.write(str(p))
+            
+def loe_highscore():
+    with open('score.txt', 'r', encoding='utf-8') as f:
+        score = f.readline()
+        score = int(score.strip())
+        return score
+    
 #taustamuusika
 mixer.music.load('HOME.mp3')
 mixer.music.set_volume(0.05)
@@ -117,7 +139,10 @@ while run:
         if menu_state == "main":
             screen.blit(pilt3, (0,0))
             if elud == 0:
-                draw_text("Mäng läbi, elud otsas!", font2,text_col,700,500)
+                salvesta_highscore(punktid)
+                draw_text("Mäng läbi, elud otsas!", font2,text_col,700,470)
+                draw_text(f"Sinu punktid: {punktid}", font2,text_col,700,500)
+                draw_text(f"Parim tulemus: {loe_highscore()}", font2,text_col,700,530)
             if resume_button.draw(screen):
                 game_paused=False
             if quit_button.draw(screen):
@@ -134,7 +159,7 @@ while run:
             elud-=1
             if elud == 0:
                 game_paused = True
-                draw_text("Mäng läbi, elud otsas!", font2,text_col,700,700)
+#                 draw_text("Mäng läbi, elud otsas!", font2,text_col,700,700)
 
             
     #pildid
